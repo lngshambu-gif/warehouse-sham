@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sham Warehouse | Stock Out (Dispatch)</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/svg+xml" href="/images/logo.svg">
+</head>
+<body>
+  <aside class="sidebar">
+    <a href="/" class="brand">
+      <img src="/images/logo.svg" alt="Sham Warehouse" style="height: 38px;">
+    </a>
+
+    <p class="nav-label">WORKSPACE</p>
+
+    <nav class="sidebar-nav">
+      <a href="/" class="nav-link">
+        <span class="nav-icon">▦</span>
+        <span>Dashboard</span>
+      </a>
+
+      <div class="nav-group">
+        <button class="nav-link nav-toggle" id="productsToggle"
+                type="button" aria-expanded="true"
+                aria-controls="productsSubmenu">
+          <span class="nav-icon">□</span>
+          <span class="nav-text">Products</span>
+          <span class="nav-arrow" id="productsArrow">⌄</span>
+        </button>
+        <div class="submenu" id="productsSubmenu">
+          <a href="/products.html" class="submenu-link">
+            <span class="submenu-dot"></span>All Products
+          </a>
+          <a href="/categories.html" class="submenu-link">
+            <span class="submenu-dot"></span>Categories
+          </a>
+          <a href="/stock-in.html" class="submenu-link">
+            <span class="submenu-dot"></span>Stock In
+          </a>
+          <a href="/stock-out.html" class="submenu-link active">
+            <span class="submenu-dot"></span>Stock Out
+          </a>
+          <a href="/low-stock.html" class="submenu-link">
+            <span class="submenu-dot"></span>Low Stock
+          </a>
+          <a href="/products.html#add" class="submenu-link">
+            <span class="submenu-dot"></span>Add Product
+          </a>
+        </div>
+      </div>
+
+      <a href="/low-stock.html" class="nav-link">
+        <span class="nav-icon">!</span>
+        <span>Low Stock Alerts</span>
+      </a>
+      <a href="/stock-in.html" class="nav-link">
+        <span class="nav-icon">＋</span>
+        <span>Receive Stock</span>
+      </a>
+      <a href="/stock-out.html" class="nav-link active">
+        <span class="nav-icon">−</span>
+        <span>Dispatch Stock</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="online-dot"></div>
+      <div>
+        <strong>System Online</strong>
+        <small>Connected to MySQL</small>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">INVENTORY MOVEMENTS</p>
+        <h1>Stock Out (Dispatch)</h1>
+      </div>
+      <div class="top-actions">
+        <span class="today" id="today"></span>
+        <div class="user-badge">
+          <div class="avatar">S</div>
+          <strong>Admin</strong>
+        </div>
+      </div>
+    </header>
+
+    <!-- Outbound Stock Form Panel -->
+    <section class="panel">
+      <div class="panel-heading">
+        <div>
+          <h2>Record Outgoing Dispatch</h2>
+          <p>Issue units for customer dispatches, store transfers, sales orders, or internal usage.</p>
+        </div>
+      </div>
+
+      <form id="movementForm">
+        <div class="product-form-grid">
+          <label class="full">
+            Product *
+            <select id="productSelect" name="product_id" required>
+              <option value="">Loading warehouse catalog...</option>
+            </select>
+            <!-- Live Preview Card with Real Product Thumbnail -->
+            <div id="productPreview" class="product-preview-card" style="display: none;">
+              <img id="previewImg" src="/images/placeholder.svg" alt="Product thumbnail" onerror="this.onerror=null; this.src='/images/placeholder.svg';">
+              <div class="product-preview-details">
+                <h4 id="previewName">—</h4>
+                <p id="previewStock">—</p>
+              </div>
+            </div>
+          </label>
+
+          <label>
+            Quantity to Dispatch *
+            <input id="quantity" name="quantity" type="number" min="1" step="1" required placeholder="e.g. 5">
+          </label>
+
+          <label class="full">
+            Dispatch Reason / Recipient / Order # (Optional)
+            <input id="note" name="note" maxlength="255" placeholder="e.g. Order #8821, Customer Delivery, Retail Transfer">
+          </label>
+        </div>
+
+        <div class="form-actions">
+          <button class="primary-button" id="submitButton" type="submit" style="background: var(--amber);">
+            − Dispatch Stock from Warehouse
+          </button>
+        </div>
+        <p id="message" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <!-- Recent Outbound Movements Log -->
+    <section class="panel" style="margin-top: 24px;">
+      <div class="panel-heading">
+        <div>
+          <h2>Recent Stock Movements</h2>
+          <p>Audit trail of incoming and outgoing inventory transactions.</p>
+        </div>
+        <button id="refresh" class="secondary-button" type="button">↻ Refresh Log</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 170px;">Date & Time</th>
+              <th>Product</th>
+              <th style="width: 120px;">Type</th>
+              <th style="width: 100px;">Quantity</th>
+              <th>Dispatch Note</th>
+            </tr>
+          </thead>
+          <tbody id="history">
+            <tr><td colspan="5" class="empty-state">Loading movements...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer>
+      <span>© 2026 Sham Warehouse • Professional Inventory Management</span>
+      <a href="/">← Back to dashboard</a>
+    </footer>
+  </main>
+
+  <script src="/js/stock-out.js"></script>
+  <script>
+    const productsToggle = document.getElementById("productsToggle");
+    const productsSubmenu = document.getElementById("productsSubmenu");
+    if (productsToggle && productsSubmenu) {
+      productsToggle.addEventListener("click", () => {
+        const isExpanded = productsToggle.getAttribute("aria-expanded") === "true";
+        productsToggle.setAttribute("aria-expanded", String(!isExpanded));
+        productsSubmenu.classList.toggle("collapsed", isExpanded);
+      });
+    }
+  </script>
+</body>
+</html>

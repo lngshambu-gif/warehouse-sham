@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sham warehouse | Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" type="image/svg+xml" href="/images/logo.svg">
+</head>
+<body>
+    <aside class="sidebar">
+        <a href="/" class="brand">
+            <img src="/images/logo.svg" alt="Sham Warehouse" style="height: 38px;">
+        </a>
+
+        <p class="nav-label">WORKSPACE</p>
+        <nav class="sidebar-nav">
+            <a href="/" class="nav-link active">
+                <span class="nav-icon">▦</span>
+                <span>Dashboard</span>
+            </a>
+
+            <div class="nav-group">
+                <button class="nav-link nav-toggle" id="productsToggle"
+                        type="button" aria-expanded="true"
+                        aria-controls="productsSubmenu">
+                    <span class="nav-icon">□</span>
+                    <span class="nav-text">Products</span>
+                    <span class="nav-arrow" id="productsArrow">⌄</span>
+                </button>
+
+                <div class="submenu" id="productsSubmenu">
+                    <a href="/products.html" class="submenu-link">
+                        <span class="submenu-dot"></span>All Products
+                    </a>
+                    <a href="/categories.html" class="submenu-link">
+                        <span class="submenu-dot"></span>Categories
+                    </a>
+                    <a href="/stock-in.html" class="submenu-link">
+                        <span class="submenu-dot"></span>Stock In
+                    </a>
+                    <a href="/stock-out.html" class="submenu-link">
+                        <span class="submenu-dot"></span>Stock Out
+                    </a>
+                    <a href="/low-stock.html" class="submenu-link">
+                        <span class="submenu-dot"></span>Low Stock
+                    </a>
+                    <a href="/products.html#add" class="submenu-link">
+                        <span class="submenu-dot"></span>Add Product
+                    </a>
+                </div>
+            </div>
+
+            <a href="/low-stock.html" class="nav-link">
+                <span class="nav-icon">!</span>
+                <span>Low Stock Alerts</span>
+            </a>
+            <a href="/stock-in.html" class="nav-link">
+                <span class="nav-icon">＋</span>
+                <span>Receive Stock</span>
+            </a>
+            <a href="/stock-out.html" class="nav-link">
+                <span class="nav-icon">−</span>
+                <span>Dispatch Stock</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="online-dot"></div>
+            <div>
+                <strong>System Online</strong>
+                <small>Connected to MySQL</small>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <div>
+                <h1>sham warehouse</h1>
+            </div>
+            <div class="top-actions">
+                <span class="today" id="today"></span>
+                <div class="user-badge">
+                    <div class="avatar">S</div>
+                    <strong>Admin</strong>
+                </div>
+                <a href="/stock-in.html" class="primary-button">
+                    <span>＋</span> Stock In
+                </a>
+            </div>
+        </header>
+
+        <!-- Warehouse Hero Banner with Photography Background -->
+        <section class="welcome hero-banner">
+            <div>
+                <span class="welcome-tag">SHAM WAREHOUSE CONTROL CENTER</span>
+                <h2>Real-Time Inventory Operations</h2>
+                <p>Track warehouse stock, record inbound and outbound shipments, and keep products stocked with intelligent alerts.</p>
+                <div class="hero-actions">
+                    <a href="/products.html" class="hero-btn primary">
+                        <span>📦 Browse Inventory</span>
+                    </a>
+                    <a href="/stock-in.html" class="hero-btn secondary">
+                        <span>＋ Receive Stock</span>
+                    </a>
+                    <a href="/stock-out.html" class="hero-btn secondary">
+                        <span>− Dispatch Stock</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-heading">
+            <div>
+                <h2>Inventory Performance</h2>
+                <p>A live snapshot of warehouse valuation, stock volume, and storage health</p>
+            </div>
+            <span class="live-status"><span></span> Live MySQL Data</span>
+        </section>
+
+        <!-- KPI Metric Cards -->
+        <section class="stats">
+            <article class="stat-card blue">
+                <div class="stat-top"><span>Total Products</span><span class="stat-icon">▦</span></div>
+                <h3 id="productCount">—</h3>
+                <p>Active items in catalog</p>
+            </article>
+            <article class="stat-card green">
+                <div class="stat-top"><span>Units in Stock</span><span class="stat-icon">▤</span></div>
+                <h3 id="stockCount">—</h3>
+                <p>Total inventory quantity</p>
+            </article>
+            <article class="stat-card purple">
+                <div class="stat-top"><span>Inventory Valuation</span><span class="stat-icon">₹</span></div>
+                <h3 id="stockValue">—</h3>
+                <p>Current warehouse asset value</p>
+            </article>
+            <article class="stat-card orange">
+                <div class="stat-top"><span>Low Stock Alerts</span><span class="stat-icon">!</span></div>
+                <h3 id="lowStockCount">—</h3>
+                <p>Items needing immediate reorder</p>
+            </article>
+        </section>
+
+        <!-- Content Grid: Recent Products + Stock Health & Movements -->
+        <section class="content-grid">
+            <div class="panel recent-panel">
+                <div class="panel-heading">
+                    <div>
+                        <h2>Catalog Highlights</h2>
+                        <p>Latest products registered in inventory</p>
+                    </div>
+                    <a href="/products.html" class="text-link">View all catalog →</a>
+                </div>
+                <div class="search-row">
+                    <input type="search" id="productSearch" placeholder="Search by name, category, or SKU...">
+                    <a href="/products.html#add" class="primary-button">＋ Add Product</a>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                                <th style="text-align: right;">Quick Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentProducts">
+                            <tr><td colspan="6" class="empty-state">Loading products...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p id="tableSummary" class="table-summary"></p>
+                <p id="errorMessage" class="error"></p>
+            </div>
+
+            <aside class="right-column">
+                <!-- Stock Health Meter -->
+                <div class="panel stock-panel">
+                    <h2>Stock Health</h2>
+                    <p>Warehouse capacity & readiness</p>
+                    <div class="stock-meter">
+                        <div class="meter-track"><div id="stockMeterFill"></div></div>
+                        <div class="meter-labels">
+                            <span>Reorder threshold: 10 units</span>
+                            <strong id="healthyPercent">—</strong>
+                        </div>
+                    </div>
+                    <div class="stock-legend">
+                        <div><span class="legend-dot in-stock"></span> In Stock <strong id="healthyCount">—</strong></div>
+                        <div><span class="legend-dot low-stock"></span> Low Stock <strong id="lowCount">—</strong></div>
+                        <div><span class="legend-dot out-stock"></span> Out of Stock <strong id="outCount">—</strong></div>
+                    </div>
+                </div>
+
+                <!-- Recent Movements Feed -->
+                <div class="panel" style="margin-top: 18px;">
+                    <div class="panel-heading" style="margin-bottom: 12px;">
+                        <div>
+                            <h3 style="font-size: 15px;">Recent Movements</h3>
+                            <p style="font-size: 12px; margin: 0;">Live audit trail</p>
+                        </div>
+                        <a href="/stock-in.html" class="text-link" style="font-size: 12px;">History →</a>
+                    </div>
+                    <div id="recentMovementsList" style="display: flex; flex-direction: column; gap: 10px;">
+                        <small style="color: var(--text-muted);">Loading movements...</small>
+                    </div>
+                </div>
+            </aside>
+        </section>
+
+        <footer>
+            <span>© 2026 Sham Warehouse • Complete Professional Inventory System</span>
+            <span>Version 2.0.0</span>
+        </footer>
+    </main>
+
+    <script src="/js/app.js"></script>
+    <script>
+        const productsToggle = document.getElementById("productsToggle");
+        const productsSubmenu = document.getElementById("productsSubmenu");
+
+        if (productsToggle && productsSubmenu) {
+            productsToggle.addEventListener("click", () => {
+                const isExpanded = productsToggle.getAttribute("aria-expanded") === "true";
+                productsToggle.setAttribute("aria-expanded", String(!isExpanded));
+                productsSubmenu.classList.toggle("collapsed", isExpanded);
+            });
+        }
+    </script>
+</body>
+</html>

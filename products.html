@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sham Warehouse | Products Catalog</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" type="image/svg+xml" href="/images/logo.svg">
+</head>
+<body>
+    <aside class="sidebar">
+        <a href="/" class="brand">
+            <img src="/images/logo.svg" alt="Sham Warehouse" style="height: 38px;">
+        </a>
+
+        <p class="nav-label">WORKSPACE</p>
+
+        <nav class="sidebar-nav">
+            <a href="/" class="nav-link">
+                <span class="nav-icon">▦</span>
+                <span>Dashboard</span>
+            </a>
+
+            <div class="nav-group">
+                <button class="nav-link nav-toggle" id="productsToggle"
+                        type="button" aria-expanded="true"
+                        aria-controls="productsSubmenu">
+                    <span class="nav-icon">□</span>
+                    <span class="nav-text">Products</span>
+                    <span class="nav-arrow" id="productsArrow">⌄</span>
+                </button>
+                <div class="submenu" id="productsSubmenu">
+                    <a href="/products.html" class="submenu-link active">
+                        <span class="submenu-dot"></span>All Products
+                    </a>
+                    <a href="/categories.html" class="submenu-link">
+                        <span class="submenu-dot"></span>Categories
+                    </a>
+                    <a href="/stock-in.html" class="submenu-link">
+                        <span class="submenu-dot"></span>Stock In
+                    </a>
+                    <a href="/stock-out.html" class="submenu-link">
+                        <span class="submenu-dot"></span>Stock Out
+                    </a>
+                    <a href="/low-stock.html" class="submenu-link">
+                        <span class="submenu-dot"></span>Low Stock
+                    </a>
+                    <a href="#add" class="submenu-link" id="addNav">
+                        <span class="submenu-dot"></span>Add Product
+                    </a>
+                </div>
+            </div>
+
+            <a href="/low-stock.html" class="nav-link">
+                <span class="nav-icon">!</span>
+                <span>Low Stock Alerts</span>
+            </a>
+            <a href="/stock-in.html" class="nav-link">
+                <span class="nav-icon">＋</span>
+                <span>Receive Stock</span>
+            </a>
+            <a href="/stock-out.html" class="nav-link">
+                <span class="nav-icon">−</span>
+                <span>Dispatch Stock</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="online-dot"></div>
+            <div>
+                <strong>System Online</strong>
+                <small>Connected to MySQL</small>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">INVENTORY MANAGEMENT</p>
+                <h1>Products Catalog</h1>
+            </div>
+            <div class="top-actions">
+                <span class="today" id="today"></span>
+                <div class="user-badge">
+                    <div class="avatar">S</div>
+                    <strong>Admin</strong>
+                </div>
+                <a href="#add" class="primary-button" id="addTopButton">
+                    <span>＋</span> Add Product
+                </a>
+            </div>
+        </header>
+
+        <!-- Add / Edit Product Form Panel -->
+        <section class="panel" id="add">
+            <div class="panel-heading">
+                <div>
+                    <h2 id="formTitle">Register New Product</h2>
+                    <p>Add new inventory items or update existing product specifications.</p>
+                </div>
+            </div>
+
+            <form id="productForm">
+                <div class="product-form-grid">
+                    <label>
+                        Product Name *
+                        <input name="product_name"
+                               required
+                               maxlength="100"
+                               placeholder="e.g. Wireless Mouse, Mechanical Keyboard">
+                    </label>
+
+                    <label>
+                        Category *
+                        <select name="category" required>
+                            <option value="">Loading categories...</option>
+                        </select>
+                    </label>
+
+                    <label>
+                        Price (₹) *
+                        <input name="price"
+                               type="number"
+                               min="0"
+                               step="0.01"
+                               required
+                               placeholder="e.g. 599.00">
+                    </label>
+
+                    <label>
+                        Initial Stock Quantity *
+                        <input name="quantity"
+                               type="number"
+                               min="0"
+                               step="1"
+                               required
+                               placeholder="e.g. 25">
+                    </label>
+
+                    <label class="full">
+                        Product Photo / Image URL
+                        <div class="image-input-group">
+                            <input name="image_url"
+                                   id="imageUrlInput"
+                                   placeholder="e.g. /images/products/wireless-mouse.jpg or choose from gallery below">
+                            <div class="image-preview-box" id="imagePreviewBox">
+                                <img id="imagePreview" src="/images/placeholder.svg" alt="Preview" onerror="this.onerror=null; this.src='/images/placeholder.svg';">
+                            </div>
+                        </div>
+
+                        <!-- Built-in Local Image Gallery Preset Strip -->
+                        <div class="image-picker-container">
+                            <span class="gallery-strip-label">Choose from warehouse image library:</span>
+                            <div class="gallery-strip" id="galleryStrip">
+                                <!-- Populated dynamically by JS -->
+                            </div>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="form-actions">
+                    <button class="primary-button" id="saveButton" type="submit">
+                        ＋ Save Product
+                    </button>
+
+                    <button class="secondary-button"
+                            id="cancelEdit"
+                            type="button"
+                            hidden>
+                        Cancel Edit
+                    </button>
+                </div>
+
+                <p id="formMessage" role="status" aria-live="polite"></p>
+            </form>
+        </section>
+
+        <!-- Inventory List / Grid Panel -->
+        <section class="panel" style="margin-top:24px">
+            <div class="panel-heading">
+                <div>
+                    <h2>Warehouse Stock Items</h2>
+                    <p id="productSummary">Loading inventory...</p>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <div class="view-toggle">
+                        <button class="view-btn active" id="viewTableBtn" type="button" title="Table View">
+                            <span>☰ Table</span>
+                        </button>
+                        <button class="view-btn" id="viewGridBtn" type="button" title="Grid View">
+                            <span>▦ Cards</span>
+                        </button>
+                    </div>
+                    <button id="exportCsvBtn" class="secondary-button" type="button" title="Download CSV">
+                        📥 Export CSV
+                    </button>
+                </div>
+            </div>
+
+            <!-- Toolbar: Search, Filters, Refresh -->
+            <div class="search-row">
+                <input id="searchInput" type="search" placeholder="Search by product name, category, or ID...">
+                <select id="categoryFilter" class="filter-select">
+                    <option value="">All Categories</option>
+                </select>
+                <select id="stockFilter" class="filter-select">
+                    <option value="all">All Stock Statuses</option>
+                    <option value="in">In Stock (>10)</option>
+                    <option value="low">Low Stock (1-10)</option>
+                    <option value="out">Out of Stock (0)</option>
+                </select>
+                <select id="sortFilter" class="filter-select">
+                    <option value="id_desc">Newest First</option>
+                    <option value="name_asc">Name (A-Z)</option>
+                    <option value="price_asc">Price (Low to High)</option>
+                    <option value="price_desc">Price (High to Low)</option>
+                    <option value="stock_desc">Highest Stock</option>
+                    <option value="stock_asc">Lowest Stock</option>
+                </select>
+                <button id="refreshButton" class="secondary-button" type="button">↻ Refresh</button>
+            </div>
+
+            <p id="pageMessage" role="status" aria-live="polite"></p>
+
+            <!-- Table View Container -->
+            <div class="table-wrap" id="tableViewWrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 80px;">ID</th>
+                            <th>Product Name</th>
+                            <th>Category</th>
+                            <th>Unit Price</th>
+                            <th>In Stock</th>
+                            <th>Status</th>
+                            <th style="width: 220px; text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsBody">
+                        <tr><td colspan="7" class="empty-state">Loading products...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Visual Grid View Container (Hidden by default, toggled via View Switcher) -->
+            <div class="products-grid" id="gridViewWrap" style="display: none;">
+                <!-- Populated dynamically by JS -->
+            </div>
+        </section>
+
+        <footer>
+            <span>© 2026 Sham Warehouse • Professional Inventory Management</span>
+            <a href="/">← Back to dashboard</a>
+        </footer>
+    </main>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-backdrop" id="deleteModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Confirm Deletion</h3>
+                <button class="modal-close" id="closeDeleteModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong id="deleteProductName">—</strong> (ID: #<span id="deleteProductId">—</span>)?</p>
+                <p style="color: var(--rose); font-size: 13px; margin-top: 8px;">⚠️ This will also remove associated stock movement history records.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="secondary-button" id="cancelDeleteBtn">Cancel</button>
+                <button class="primary-button" id="confirmDeleteBtn" style="background: var(--rose);">Delete Product</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/products.js"></script>
+    <script>
+        const productsToggle = document.getElementById("productsToggle");
+        const productsSubmenu = document.getElementById("productsSubmenu");
+        if (productsToggle && productsSubmenu) {
+            productsToggle.addEventListener("click", () => {
+                const isExpanded = productsToggle.getAttribute("aria-expanded") === "true";
+                productsToggle.setAttribute("aria-expanded", String(!isExpanded));
+                productsSubmenu.classList.toggle("collapsed", isExpanded);
+            });
+        }
+    </script>
+</body>
+</html>

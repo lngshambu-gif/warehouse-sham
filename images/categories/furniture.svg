@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80">
+    <defs>
+      <linearGradient id="furnGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#06b6d4"/>
+        <stop offset="100%" stop-color="#0e7490"/>
+      </linearGradient>
+    </defs>
+    <rect width="80" height="80" rx="20" fill="url(#furnGrad)"/>
+    <rect x="30" y="18" width="20" height="22" rx="4" fill="#ffffff"/>
+    <rect x="26" y="40" width="28" height="6" rx="3" fill="#ffffff"/>
+    <line x1="40" y1="46" x2="40" y2="56" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+    <line x1="28" y1="58" x2="52" y2="58" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+  </svg>

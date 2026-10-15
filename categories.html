@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sham Warehouse | Categories</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" type="image/svg+xml" href="/images/logo.svg">
+</head>
+<body>
+    <aside class="sidebar">
+        <a href="/" class="brand">
+            <img src="/images/logo.svg" alt="Sham Warehouse" style="height: 38px;">
+        </a>
+
+        <p class="nav-label">WORKSPACE</p>
+        <nav class="sidebar-nav">
+            <a href="/" class="nav-link">
+                <span class="nav-icon">▦</span>
+                <span>Dashboard</span>
+            </a>
+
+            <div class="nav-group">
+                <button class="nav-link nav-toggle" id="productsToggle"
+                        type="button" aria-expanded="true"
+                        aria-controls="productsSubmenu">
+                    <span class="nav-icon">□</span>
+                    <span class="nav-text">Products</span>
+                    <span class="nav-arrow" id="productsArrow">⌄</span>
+                </button>
+                <div class="submenu" id="productsSubmenu">
+                    <a href="/products.html" class="submenu-link">
+                        <span class="submenu-dot"></span>All Products
+                    </a>
+                    <a href="/categories.html" class="submenu-link active">
+                        <span class="submenu-dot"></span>Categories
+                    </a>
+                    <a href="/stock-in.html" class="submenu-link">
+                        <span class="submenu-dot"></span>Stock In
+                    </a>
+                    <a href="/stock-out.html" class="submenu-link">
+                        <span class="submenu-dot"></span>Stock Out
+                    </a>
+                    <a href="/low-stock.html" class="submenu-link">
+                        <span class="submenu-dot"></span>Low Stock
+                    </a>
+                    <a href="/products.html#add" class="submenu-link">
+                        <span class="submenu-dot"></span>Add Product
+                    </a>
+                </div>
+            </div>
+
+            <a href="/low-stock.html" class="nav-link">
+                <span class="nav-icon">!</span>
+                <span>Low Stock Alerts</span>
+            </a>
+            <a href="/stock-in.html" class="nav-link">
+                <span class="nav-icon">＋</span>
+                <span>Receive Stock</span>
+            </a>
+            <a href="/stock-out.html" class="nav-link">
+                <span class="nav-icon">−</span>
+                <span>Dispatch Stock</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="online-dot"></div>
+            <div>
+                <strong>System Online</strong>
+                <small>Connected to MySQL</small>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">INVENTORY ORGANIZATION</p>
+                <h1>Categories</h1>
+            </div>
+            <div class="top-actions">
+                <span class="today" id="today"></span>
+                <div class="user-badge">
+                    <div class="avatar">S</div>
+                    <strong>Admin</strong>
+                </div>
+                <a href="#categoryFormPanel" class="primary-button" id="newCategoryButton">
+                    <span>＋</span> New Category
+                </a>
+            </div>
+        </header>
+
+        <!-- KPI Metrics -->
+        <section class="stats">
+            <div class="stat-card blue">
+                <div class="stat-top"><span>Total Categories</span><span class="stat-icon">▤</span></div>
+                <h3 id="totalCategories">—</h3>
+                <p>Configured departments</p>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-top"><span>Categorized Items</span><span class="stat-icon">▦</span></div>
+                <h3 id="categorizedProducts">—</h3>
+                <p>Products with active category</p>
+            </div>
+            <div class="stat-card purple">
+                <div class="stat-top"><span>Categorized Value</span><span class="stat-icon">₹</span></div>
+                <h3 id="categorizedValue">—</h3>
+                <p>Inventory value organized</p>
+            </div>
+        </section>
+
+        <!-- Visual Category Cards Grid with Icons -->
+        <section class="panel" style="margin-top: 24px;">
+            <div class="panel-heading">
+                <div>
+                    <h2>Category Overview</h2>
+                    <p>Department distribution with icons, product counts, and stock volume</p>
+                </div>
+            </div>
+            <div class="category-cards-grid" id="categoryCardsGrid">
+                <div class="empty-state">Loading categories...</div>
+            </div>
+        </section>
+
+        <!-- Add / Edit Category Panel -->
+        <section class="panel" id="categoryFormPanel" style="margin-top:24px">
+            <div class="panel-heading">
+                <div>
+                    <h2 id="categoryFormTitle">Create New Category</h2>
+                    <p>Classify inventory into structured departments and product families.</p>
+                </div>
+            </div>
+
+            <form id="categoryForm">
+                <div class="product-form-grid">
+                    <label>
+                        Category Name *
+                        <input id="categoryName" name="category_name" required maxlength="100" placeholder="e.g. Smart Electronics, Hardware">
+                    </label>
+
+                    <label class="full">
+                        Description (Optional)
+                        <input id="categoryDescription" name="description" maxlength="255" placeholder="Short description of products in this category">
+                    </label>
+                </div>
+
+                <div class="form-actions">
+                    <button class="primary-button" id="saveCategory" type="submit">
+                        ＋ Save Category
+                    </button>
+                    <button class="secondary-button" id="cancelCategory" type="button" hidden>
+                        Cancel Edit
+                    </button>
+                </div>
+
+                <p id="categoryMessage" class="notice" role="status" aria-live="polite"></p>
+            </form>
+        </section>
+
+        <!-- Category Table Panel -->
+        <section class="panel" style="margin-top:24px">
+            <div class="panel-heading">
+                <div>
+                    <h2>All Categories</h2>
+                    <p id="categorySummary">Loading categories...</p>
+                </div>
+                <button id="refreshCategories" class="secondary-button" type="button">↻ Refresh</button>
+            </div>
+
+            <div class="search-row">
+                <input id="categorySearch" type="search" placeholder="Search categories by name or description...">
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 80px;">ID</th>
+                            <th>Department / Category</th>
+                            <th>Description</th>
+                            <th style="width: 140px;">Products</th>
+                            <th style="width: 160px;">Total Valuation</th>
+                            <th style="width: 160px; text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="categoriesBody">
+                        <tr><td colspan="6" class="empty-state">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <footer>
+            <span>© 2026 Sham Warehouse • Professional Inventory Management</span>
+            <a href="/">← Back to dashboard</a>
+        </footer>
+    </main>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-backdrop" id="deleteCategoryModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Delete Category</h3>
+                <button class="modal-close" id="closeDeleteCatModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete category <strong id="deleteCatName">—</strong>?</p>
+                <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px;">Note: Products assigned to this category will not be deleted, but will become unassigned.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="secondary-button" id="cancelDeleteCatBtn">Cancel</button>
+                <button class="primary-button" id="confirmDeleteCatBtn" style="background: var(--rose);">Delete Category</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/categories.js"></script>
+    <script>
+        const productsToggle = document.getElementById("productsToggle");
+        const productsSubmenu = document.getElementById("productsSubmenu");
+        if (productsToggle && productsSubmenu) {
+            productsToggle.addEventListener("click", () => {
+                const isExpanded = productsToggle.getAttribute("aria-expanded") === "true";
+                productsToggle.setAttribute("aria-expanded", String(!isExpanded));
+                productsSubmenu.classList.toggle("collapsed", isExpanded);
+            });
+        }
+    </script>
+</body>
+</html>

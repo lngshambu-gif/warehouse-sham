@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sham Warehouse | Low Stock & Reorder Alerts</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/svg+xml" href="/images/logo.svg">
+</head>
+<body>
+  <aside class="sidebar">
+    <a href="/" class="brand">
+      <img src="/images/logo.svg" alt="Sham Warehouse" style="height: 38px;">
+    </a>
+
+    <p class="nav-label">WORKSPACE</p>
+
+    <nav class="sidebar-nav">
+      <a href="/" class="nav-link">
+        <span class="nav-icon">▦</span>
+        <span>Dashboard</span>
+      </a>
+
+      <div class="nav-group">
+        <button class="nav-link nav-toggle" id="productsToggle"
+                type="button" aria-expanded="true"
+                aria-controls="productsSubmenu">
+          <span class="nav-icon">□</span>
+          <span class="nav-text">Products</span>
+          <span class="nav-arrow" id="productsArrow">⌄</span>
+        </button>
+        <div class="submenu" id="productsSubmenu">
+          <a href="/products.html" class="submenu-link">
+            <span class="submenu-dot"></span>All Products
+          </a>
+          <a href="/categories.html" class="submenu-link">
+            <span class="submenu-dot"></span>Categories
+          </a>
+          <a href="/stock-in.html" class="submenu-link">
+            <span class="submenu-dot"></span>Stock In
+          </a>
+          <a href="/stock-out.html" class="submenu-link">
+            <span class="submenu-dot"></span>Stock Out
+          </a>
+          <a href="/low-stock.html" class="submenu-link active">
+            <span class="submenu-dot"></span>Low Stock
+          </a>
+          <a href="/products.html#add" class="submenu-link">
+            <span class="submenu-dot"></span>Add Product
+          </a>
+        </div>
+      </div>
+
+      <a href="/low-stock.html" class="nav-link active">
+        <span class="nav-icon">!</span>
+        <span>Low Stock Alerts</span>
+      </a>
+      <a href="/stock-in.html" class="nav-link">
+        <span class="nav-icon">＋</span>
+        <span>Receive Stock</span>
+      </a>
+      <a href="/stock-out.html" class="nav-link">
+        <span class="nav-icon">−</span>
+        <span>Dispatch Stock</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="online-dot"></div>
+      <div>
+        <strong>System Online</strong>
+        <small>Connected to MySQL</small>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">INVENTORY SURVEILLANCE</p>
+        <h1>Low Stock & Reorder Alerts</h1>
+      </div>
+      <div class="top-actions">
+        <span class="today" id="today"></span>
+        <div class="user-badge">
+          <div class="avatar">S</div>
+          <strong>Admin</strong>
+        </div>
+      </div>
+    </header>
+
+    <!-- Alert Summary Banner with Threshold Selector -->
+    <section class="panel" style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border-color: #fde68a;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+        <div style="display: flex; align-items: center; gap: 18px;">
+          <div style="width: 52px; height: 52px; border-radius: 12px; background: var(--amber); color: white; display: grid; place-items: center; font-size: 24px; font-weight: 800;">
+            !
+          </div>
+          <div>
+            <p class="eyebrow" style="color: #92400e;">AUTOMATED INVENTORY SURVEILLANCE</p>
+            <h2 id="alertCount" style="color: #78350f; font-size: 20px;">Analyzing inventory levels...</h2>
+            <p style="color: #92400e; font-size: 13.5px; margin: 0;">Products requiring supplier reorders or replenishment.</p>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <label style="font-weight: 600; font-size: 13px; color: #78350f; margin: 0;">
+            Alert Threshold:
+            <select id="threshold" style="background: white; border: 1px solid #fcd34d; font-weight: 600; padding: 8px 12px; border-radius: 6px; margin-left: 6px;">
+              <option value="5">≤ 5 units (Critical)</option>
+              <option value="10" selected>≤ 10 units (Standard)</option>
+              <option value="15">≤ 15 units (Early Warning)</option>
+              <option value="20">≤ 20 units (Wide Margin)</option>
+            </select>
+          </label>
+          <button id="exportReorderBtn" class="secondary-button" style="background: white;" type="button">
+            📥 Export Reorder Sheet
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Low Stock Table Panel -->
+    <section class="panel" style="margin-top: 24px;">
+      <div class="panel-heading">
+        <div>
+          <h2>Restock Priority Queue</h2>
+          <p id="subCount">Scanning warehouse database...</p>
+        </div>
+        <button id="refresh" class="secondary-button" type="button">↻ Refresh Alerts</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 80px;">ID</th>
+              <th>Product Details</th>
+              <th>Category</th>
+              <th style="width: 140px;">Unit Price</th>
+              <th style="width: 140px;">Current Stock</th>
+              <th style="width: 130px;">Urgency</th>
+              <th style="width: 170px; text-align: right;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="lowStockBody">
+            <tr><td colspan="7" class="empty-state">Loading stock alerts...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer>
+      <span>© 2026 Sham Warehouse • Professional Inventory Management</span>
+      <a href="/">← Back to dashboard</a>
+    </footer>
+  </main>
+
+  <!-- Quick Reorder Modal -->
+  <div class="modal-backdrop" id="reorderModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Quick Restock / Inbound Intake</h3>
+        <button class="modal-close" id="closeReorderModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="display: flex; gap: 14px; align-items: center; margin-bottom: 16px;">
+          <img id="modalProductImg" src="/images/placeholder.svg" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border);">
+          <div>
+            <h4 id="modalProductName" style="font-size: 15px; margin-bottom: 2px;">—</h4>
+            <small style="color: var(--text-muted);">Current Stock: <strong id="modalCurrentStock" style="color: var(--rose);">0 units</strong></small>
+          </div>
+        </div>
+
+        <label style="display: block; margin-bottom: 12px;">
+          Quantity to Restock *
+          <input type="number" id="modalQuantity" min="1" step="1" value="20" required style="width: 100%; margin-top: 4px;">
+        </label>
+
+        <label style="display: block;">
+          Supplier / PO Note
+          <input type="text" id="modalNote" value="Emergency reorder - Low stock replenishment" style="width: 100%; margin-top: 4px;">
+        </label>
+        <p id="modalMessage" class="notice" style="display:none; margin-top:12px;"></p>
+      </div>
+      <div class="modal-footer">
+        <button class="secondary-button" id="cancelReorderBtn">Cancel</button>
+        <button class="primary-button" id="confirmReorderBtn">＋ Confirm Intake</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/low-stock.js"></script>
+  <script>
+    const productsToggle = document.getElementById("productsToggle");
+    const productsSubmenu = document.getElementById("productsSubmenu");
+    if (productsToggle && productsSubmenu) {
+      productsToggle.addEventListener("click", () => {
+        const isExpanded = productsToggle.getAttribute("aria-expanded") === "true";
+        productsToggle.setAttribute("aria-expanded", String(!isExpanded));
+        productsSubmenu.classList.toggle("collapsed", isExpanded);
+      });
+    }
+  </script>
+</body>
+</html>
